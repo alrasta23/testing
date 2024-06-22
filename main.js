@@ -133,6 +133,18 @@ const heartRateMonitor = (function () {
 		return cameras[cameras.length - 1];
 	};
 
+	const startAnimation = () => {
+		const element = document.getElementById("bpm-display-container");
+		element.classList.remove("reverse-animate"); // Remove reverse animation if applied
+		element.classList.add("animate");
+	};
+
+	const stopAnimation = () => {
+		const element = document.getElementById("bpm-display-container");
+		element.classList.remove("animate"); // Remove the forward animation
+		element.classList.add("reverse-animate");
+	};
+
 	const startMonitoring = async () => {
 		resetBuffer();
 		handleResize();
@@ -328,6 +340,13 @@ const heartRateMonitor = (function () {
 		) {
 			//setBpmStatusDisplay("Finger detected");
 		} else {
+			if (measureStatus != 0) {
+				stopAnimation();
+				rrIntervalsLast10 = [];
+				avg20Intervals = 0;
+				setBpmDisplay("");
+			}
+			measureStatus = 0;
 			setBpmStatusDisplay("Please place your finger on the camera");
 			return;
 		}
@@ -414,11 +433,20 @@ const heartRateMonitor = (function () {
 	let rrIntervalsLast10 = [];
 	let avg20Intervals = 0;
 	let captureTime = Date.now();
+	let measureStatus = 0;
+	// 0 no finger
+	// 1 calibrating
+	// 2 measuring
 
 	const calculateBpm = (samples) => {
 		if (samples.length < 3) {
 			setBpmDisplay("");
 			setBpmStatusDisplay("Calibrating");
+			if (measureStatus != 1) {
+				// Start the animation
+				startAnimation();
+			}
+			measureStatus = 1;
 			return;
 		}
 
@@ -439,10 +467,23 @@ const heartRateMonitor = (function () {
 				rrIntervalLast = rrIntFirst;
 				// console.log(rrIntervals.length);
 				if (rrIntervals.length == 50) {
+					// setTimeout(function (rrIntervals) {
 					const metrics = calculateMetrics(rrIntervals);
 					// Convert the metrics to a JSON string
 					const metricsString = JSON.stringify(metrics, null, 2);
 					alert(metricsString);
+					// }, 1000);
+
+					measureStatus = 0;
+					rrIntervalsLast10 = [];
+					rrIntervals = [];
+					// setTimeout(function (rrIntervals) {
+					stopMonitoring();
+					stopAnimation();
+					// rrIntervalsLast10 = [];
+					// rrIntervals = [];
+					// }, 1000);
+					setBpmStatusDisplay("All Done!");
 				}
 				if (rrIntervalsLast10.length >= 20) {
 					rrIntervalsLast10.shift();
@@ -463,8 +504,15 @@ const heartRateMonitor = (function () {
 					captureTime = Date.now();
 
 					let numCurrentIntervals = rrIntervals.length;
-					setBpmStatusDisplay(numCurrentIntervals + "/50");
+					let percentage = parseInt((numCurrentIntervals / 50) * 100);
+					setBpmStatusDisplay("Measuring " + percentage + "%");
 					console.log(rrIntervals);
+
+					if (measureStatus != 2) {
+						// Start the animation
+						startAnimation();
+					}
+					measureStatus = 2;
 				}
 			}
 			if (avg20Intervals > 0) {

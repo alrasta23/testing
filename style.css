@@ -92,6 +92,7 @@ button {
 	flex-direction: column;
 	min-height: 100%;
 	height: 100%;
+	background-color: white;
 }
 
 .main-view header,
@@ -109,15 +110,16 @@ button {
 	font-size: 1.8rem;
 	font-weight: 300;
 	text-align: center;
+	color: black;
 }
 .main-view header small {
-	color: var(--text-color-muted);
+	color: black;
 }
 .main-view main {
 	flex-grow: 1;
 	display: flex;
 	flex-direction: column;
-	justify-content: center;
+	/* justify-content: center; */
 }
 
 .main-view footer {
@@ -163,58 +165,115 @@ button {
 
 /* BPM circle */
 #bpm-display-container {
-	height: 320px;
-	width: 320px;
+	height: 200px;
+	width: 200px;
 	max-width: 70vw;
 	max-height: 70vw;
 	margin: 0 auto;
 	border: 9px solid var(--graph-color);
-	border-radius: 100%;
+	border-radius: 50%;
+	justify-content: center;
+	align-items: center;
+	overflow: hidden;
+	position: relative;
+	cursor: pointer;
+	margin-bottom: 20px;
+	/* margin-bottom: 200px; */
+}
+
+/* Keyframes for the shrink and move up animation */
+@keyframes shrinkAndMoveUp {
+	0% {
+		transform: scale(1) translateY(0);
+	}
+	100% {
+		transform: scale(0.4) translateY(-150px);
+	}
+}
+
+/* Keyframes for the grow and move down animation */
+@keyframes growAndMoveDown {
+	0% {
+		transform: scale(0.4) translateY(-150px);
+	}
+	100% {
+		transform: scale(1) translateY(0);
+	}
+}
+
+/* Animation classes */
+.animate {
+	animation: shrinkAndMoveUp 1s forwards;
+}
+
+.reverse-animate {
+	animation: growAndMoveDown 1s forwards;
+}
+
+#bpm-display {
+	text-align: center;
+	height: 100%;
+	width: 100%;
+	border-radius: 50%;
+	overflow: hidden;
+	position: relative; /* Ensure it contains the video absolutely positioned */
+}
+
+#camera-feed {
+	width: 100%;
+	height: 100%;
+	object-fit: cover; /* Ensure the video covers the entire container */
+	position: absolute; /* Position the video absolutely within the container */
+	top: 50%;
+	left: 50%;
+	justify-content: center;
+	transform: translate(
+		-50%,
+		-50%
+	); /* Center the video within the container */
+}
+#new-section {
 	display: flex;
 	flex-direction: column;
 	justify-content: center;
 	align-items: center;
-	margin: 0em auto 3em auto;
-	cursor: pointer;
-}
-
-#camera-feed {
-	width: 100%; /* Make video fill the container */
-	height: auto; /* Maintain aspect ratio */
-}
-
-#bpm-display {
+	height: 200px; /* Adjust as needed */
+	width: 100%; /* Adjust as needed */
 	text-align: center;
 }
 
 #bpm-display label {
 	font-size: 1rem;
 	text-transform: uppercase;
-	color: var(--text-color-muted);
+	color: rgb(35, 34, 34);
 }
 
 #bpm-value {
 	display: block;
-	font-size: 4rem;
+	font-size: 8rem;
 	position: relative;
+	color: rgb(45, 40, 40);
 }
 
 #bpm-value:empty:before {
-	content: "–";
-	color: var(--text-color-muted);
+	content: "00";
+	color: rgb(45, 40, 40);
 }
 
 #bpm-status {
 	z-index: 1; /* Ensure it appears above the video */
-	color: var(--page-color); /* Adjust text color as needed */
+	color: black; /* Adjust text color as needed */
 	font-size: 1em; /* Adjust font size as needed */
-	margin-top: 100px; /* Add space between bpm-value and bpm-status */
+	margin-top: 10px; /* Add space between bpm-value and bpm-status */
 }
 
 /* Graph */
 #graph-container {
 	background: var(--graph-background);
 	height: 100px;
+	width: 100%;
+	position: absolute;
+	bottom: 0;
 }
 
 #graph-canvas {
@@ -224,7 +283,6 @@ button {
 }
 
 /* Video, canvas and debug info */
-#camera-feed,
 #sampling-canvas {
 	width: 100px;
 	height: 100px;

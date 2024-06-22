@@ -18,11 +18,11 @@
 			}
 
 			:root {
-				--page-background: #111;
+				--page-background: #ffffff;
 				--page-color: #ddd;
-				--text-color-muted: #666;
+				--text-color-muted: #000000;
 				--graph-background: transparent;
-				--graph-color: #f76;
+				--graph-color: rgb(201, 201, 201);
 				--backdrop-background: rgba(0, 0, 0, 0.3);
 				--nav-item-background: #151515;
 			}
@@ -47,51 +47,27 @@
 			<div class="main-view">
 				<header>
 					<div>
-						<h1>Heart Rate Monitor</h1>
-						<small>Tap the circle to start / stop</small>
+						<h1>Heartify</h1>
 					</div>
 				</header>
 
 				<main>
-					<section id="bpm-display-container">
-						<div id="bpm-display">
-							<video id="camera-feed" playsinline></video>
+					<section id="main-container">
+						<section id="bpm-display-container">
+							<div id="bpm-display">
+								<video id="camera-feed" playsinline></video>
+							</div>
+						</section>
+						<section id="new-section">
 							<output id="bpm-value" title="Heart rate"></output>
+							<h1>❤️ BPM</h1>
 							<output id="bpm-status" title="Hello"></output>
-						</div>
-					</section>
-
-					<section id="graph-container">
-						<canvas id="graph-canvas"></canvas>
+						</section>
+						<section id="graph-container">
+							<canvas id="graph-canvas"></canvas>
+						</section>
 					</section>
 				</main>
-
-				<footer>
-					<button class="icon-button menu-toggle">
-						<span>Menu</span>
-					</button>
-					<nav class="menu" style="display: none">
-						<ul>
-							<li>
-								<a
-									href="#instructions"
-									data-modal-name="instructions"
-									>Instructions</a
-								>
-							</li>
-							<li>
-								<a href="#about" data-modal-name="about"
-									>About</a
-								>
-							</li>
-							<li class="debug-menu-item" style="display: none">
-								<a href="#about" data-modal-name="debug"
-									>Debug</a
-								>
-							</li>
-						</ul>
-					</nav>
-				</footer>
 			</div>
 
 			<div class="modal" data-name="instructions">
@@ -193,54 +169,51 @@
 		<script src="dsp.js"></script>
 		<script src="main.js"></script>
 		<script>
-			function openModal(name) {
-				document
-					.querySelector(`.modal[data-name='${name}']`)
-					.classList.add("open");
-			}
+			// function openModal(name) {
+			// 	document
+			// 		.querySelector(`.modal[data-name='${name}']`)
+			// 		.classList.add("open");
+			// }
 
-			function setupNav() {
-				document
-					.querySelector("button.menu-toggle")
-					.addEventListener("click", () => {
-						document
-							.querySelector("nav.menu")
-							.classList.toggle("open");
-					});
-				document.querySelectorAll("nav a").forEach((link) => {
-					link.addEventListener("click", (event) => {
-						event.preventDefault();
-						document
-							.querySelector("nav.menu")
-							.classList.toggle("open");
+			// function setupNav() {
+			// 	document
+			// 		.querySelector("button.menu-toggle")
+			// 		.addEventListener("click", () => {
+			// 			document
+			// 				.querySelector("nav.menu")
+			// 				.classList.toggle("open");
+			// 		});
+			// 	document.querySelectorAll("nav a").forEach((link) => {
+			// 		link.addEventListener("click", (event) => {
+			// 			event.preventDefault();
+			// 			document
+			// 				.querySelector("nav.menu")
+			// 				.classList.toggle("open");
 
-						const modalName = event.target.getAttribute(
-							"data-modal-name"
-						);
-						openModal(modalName);
-					});
-				});
-			}
+			// 			const modalName = event.target.getAttribute(
+			// 				"data-modal-name"
+			// 			);
+			// 			openModal(modalName);
+			// 		});
+			// 	});
+			// }
 
-			function setupModals() {
-				document.querySelectorAll(".modal").forEach((modal) => {
-					modal.addEventListener("click", (event) => {
-						if (event.originalTarget === modal) {
-							modal.classList.remove("open");
-						}
-					});
-					modal
-						.querySelector("button.close")
-						.addEventListener("click", () => {
-							modal.classList.remove("open");
-						});
-				});
-			}
+			// function setupModals() {
+			// 	document.querySelectorAll(".modal").forEach((modal) => {
+			// 		modal.addEventListener("click", (event) => {
+			// 			if (event.originalTarget === modal) {
+			// 				modal.classList.remove("open");
+			// 			}
+			// 		});
+			// 		modal
+			// 			.querySelector("button.close")
+			// 			.addEventListener("click", () => {
+			// 				modal.classList.remove("open");
+			// 			});
+			// 	});
+			// }
 
 			document.addEventListener("DOMContentLoaded", function () {
-				setupNav();
-				setupModals();
-
 				// Allow setting various flags and options via the hash fragment
 				const hash = location.hash.length
 					? location.hash.substring(1)
@@ -272,14 +245,14 @@
 					graphColor: getComputedStyle(
 						document.documentElement
 					).getPropertyValue("--graph-color"),
-					graphWidth: 6,
+					graphWidth: 3,
 					onBpmChange: (bpm) => (bpmElement.innerText = bpm),
 					onBpmStatusChange: (status) =>
 						(bpmStatusElement.innerText = status), // Added this line
 				});
 
 				document
-					.getElementById("bpm-display-container")
+					.getElementById("main-container")
 					.addEventListener(
 						"click",
 						heartRateMonitor.toggleMonitoring
